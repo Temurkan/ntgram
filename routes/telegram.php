@@ -59,8 +59,6 @@ $bot->onText('🍴 Меню', function (Nutgram $bot) {
     $bot->answerCallbackQuery();
 });
 
-
-
 $bot->onText('📍 отправить геолокацию', function (Nutgram $bot) {
 
     $kb2 = ['reply_markup' =>
@@ -92,8 +90,9 @@ $bot->onText('Лаваш', function (Nutgram $bot) {
     /** @var Message $message */
     $message = $bot->sendPhoto($photo, ['chat_id' => 814336975]); // pass the resource
 
-    fclose($photo); // close the file
-
+    if (is_resource($photo)) {
+        fclose($photo);
+    }
     $kb2 = ['reply_markup' =>
         ['keyboard' => [
             [
@@ -112,7 +111,38 @@ $bot->onText('Лаваш', function (Nutgram $bot) {
         ], 'resize_keyboard' => true]
     ];
     $bot->sendMessage("Выберите", $kb2);
-    $bot->run();
+});
+
+$bot->onText('Лаваш с говядиной', function (Nutgram $bot) {
+
+    // Send a photo to a specific user ***********************************************
+    $photo = fopen('public/beefLavash.jpg', 'r+'); // open the file
+
+    /** @var Message $message */
+    $message = $bot->sendPhoto($photo, ['chat_id' => 814336975]); // pass the resource
+
+    if (is_resource($photo)) {
+        fclose($photo);
+    }
+
+    $bot->sendMessage('Виберите одно из следующих!', [
+        'reply_markup' => InlineKeyboardMarkup::make()
+            ->addRow(
+                InlineKeyboardButton::make('мини 23000 сум', callback_data: 'type:a'),
+                InlineKeyboardButton::make('28000 сум', callback_data: 'type:b')
+            )
+    ]);
+    $kb2 = ['reply_markup' =>
+        ['keyboard' => [
+            [
+                ['text' => '🧺 Корзина'],
+            ],
+            [
+                ['text' => '⬅ назад'],
+            ],
+        ], 'resize_keyboard' => true]
+    ];
+    $bot->sendMessage("", $kb2);
 });
 
 $bot->onText('⬅ назад', function (Nutgram $bot) {
